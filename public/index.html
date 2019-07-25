@@ -5,8 +5,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Document</title>
+  <title>AQI</title>
   <style>
+    /* body {
+      background-color: rgb(84, 91, 50)
+    } */
+
     #block1 {
       width: 100%;
       height: 500px;
@@ -20,7 +24,7 @@
   <script src="https://cdn.bootcss.com/echarts/4.2.1-rc1/echarts.min.js"></script>
   <script src="./script/calcMonthlyData.js"></script>
   <script>
-    let city = 'xingtai';
+    let city = 'beijing';
     d3.csv('./data/' + city + '.csv').then(val => {
       let aqi_per_month = calcMonthlyData(val);
 
@@ -33,12 +37,14 @@
         xAxis: {
           data: aqi_per_month.map(function (item) {
             return item[0];
-          })
+          }),
+          show: false
         },
         yAxis: {
           splitLine: {
             show: false
-          }
+          },
+          show: false
         },
         toolbox: {
           left: 'center',
@@ -50,58 +56,77 @@
             saveAsImage: {}
           }
         },
-        visualMap: {
-          top: 10,
-          right: 10,
-          pieces: [{
-            gt: 0,
-            lte: 50,
-            color: '#096'
-          }, {
-            gt: 50,
-            lte: 100,
-            color: '#ffde33'
-          }, {
-            gt: 100,
-            lte: 150,
-            color: '#ff9933'
-          }, {
-            gt: 150,
-            lte: 200,
-            color: '#cc0033'
-          }, {
-            gt: 200,
-            lte: 300,
-            color: '#660099'
-          }, {
-            gt: 300,
-            color: '#7e0023'
-          }],
-          outOfRange: {
-            color: '#999'
-          }
-        },
+        // visualMap: {
+        //   top: 10,
+        //   right: 10,
+        //   pieces: [{
+        //     gt: 0,
+        //     lte: 50,
+        //     color: '#096'
+        //   }, {
+        //     gt: 50,
+        //     lte: 100,
+        //     color: '#ffde33'
+        //   }, {
+        //     gt: 100,
+        //     lte: 150,
+        //     color: '#ff9933'
+        //   }, {
+        //     gt: 150,
+        //     lte: 200,
+        //     color: '#cc0033'
+        //   }, {
+        //     gt: 200,
+        //     lte: 300,
+        //     color: '#660099'
+        //   }, {
+        //     gt: 300,
+        //     color: '#7e0023'
+        //   }],
+        //   outOfRange: {
+        //     color: '#999'
+        //   }
+        // },
         series: {
-          name: 'Xingtai AQI',
+          name: city + ' AQI',
           type: 'line',
           smooth: true,
+          itemStyle: {
+            opacity: 0
+          },
+          lineStyle: {
+            opacity: 0
+          },
           data: aqi_per_month.map(function (item) {
             return item[1];
           }),
-          markLine: {
-            silent: true,
-            data: [{
-              yAxis: 50
+          // markLine: {
+          //   silent: true,
+          //   data: [{
+          //     yAxis: 50
+          //   }, {
+          //     yAxis: 100
+          //   }, {
+          //     yAxis: 150
+          //   }, {
+          //     yAxis: 200
+          //   }, {
+          //     yAxis: 300
+          //   }]
+          // },
+          areaStyle: {
+            color: new echarts.graphic.LinearGradient(0, 0.3, 0, 1, [{
+              offset: 0,
+              color: 'rgb(53, 106, 144)'
             }, {
-              yAxis: 100
+              offset: 0.5,
+              color: 'rgb(124, 156, 114)'
             }, {
-              yAxis: 150
-            }, {
-              yAxis: 200
-            }, {
-              yAxis: 300
-            }]
-          }
+              offset: 1,
+              color: 'rgb(152, 123, 65)'
+            }]),
+            opacity: 1
+          },
         }
       };
       chart1.setOption(option1);
