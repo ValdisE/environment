@@ -18,18 +18,20 @@
   <div id="block1"></div>
   <script src="https://d3js.org/d3.v5.min.js"></script>
   <script src="https://cdn.bootcss.com/echarts/4.2.1-rc1/echarts.min.js"></script>
+  <script src="./script/calcMonthlyData.js"></script>
   <script>
-    d3.csv('./data/beijing.csv').then(val => {
-      let aqi = [];
-      for (let i of val) aqi.push([i.date, i.score]);
+    let city = 'xingtai';
+    d3.csv('./data/' + city + '.csv').then(val => {
+      let aqi_per_month = calcMonthlyData(val);
+
       const block1 = document.getElementById('block1');
       const chart1 = echarts.init(block1);
       let option1 = {
         title: {
-          text: '北京 | 空气质量数据(AQI)'
+          text: 'Air Quality Index(AQI) of ' + city.toUpperCase()
         },
         xAxis: {
-          data: aqi.map(function (item) {
+          data: aqi_per_month.map(function (item) {
             return item[0];
           })
         },
@@ -82,7 +84,8 @@
         series: {
           name: 'Xingtai AQI',
           type: 'line',
-          data: aqi.map(function (item) {
+          smooth: true,
+          data: aqi_per_month.map(function (item) {
             return item[1];
           }),
           markLine: {
