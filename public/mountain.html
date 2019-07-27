@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Mountain-p5</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: rgb(239, 232, 222);
+        }
+    </style>
+</head>
+
+<body>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="https://cdn.bootcss.com/p5.js/0.9.0/p5.min.js"></script>
+    <script src="./script/calcMonthlyData.js"></script>
+    <script src="./script/getMonthData.js"></script>
+    <script>
+        let city = 'beijing'
+        const Y_AXIS = 1;
+        const X_AXIS = 2;
+
+        /**
+         * 数据的是各个时间点的API值。时间点仅用来标注，并不参与运算。
+         *  - 首先确定一个矩形，用来描述绘制山的范围；
+         *  - 然后根据矩形的范围和数据的情况，把一系列AQI数据转化成二维点，保存为山的数据结构的一部分；
+         *  - 
+         * 
+         **/
+        let mountain = {
+            outer_line: [],
+            inner_line: [],
+            rect: {
+                x: 50, y: 0, w: 500, h: 0
+            },
+            data2draw: function (dataset, rect) {
+                for (let i = 0; i < dataset.length - 1; i++) {
+                    day = dataset[i];
+                    line(50 + 20 * i, dataset[i][1], 50 + 20 * (i + 1), dataset[i + 1][1]);
+                }
+            }
+        }
+
+        function setup() {
+            createCanvas(800, 400);
+            d3.csv('./data/' + city + '.csv').then(val => {
+                let aqi_per_month = calcMonthlyData(val);
+                let some_month_data = getMonthData(val, 2018, 12);
+                stroke(0);
+                console.log(some_month_data);
+                for (let i = 0; i < some_month_data.length - 1; i++) {
+                    day = some_month_data[i];
+                    line(50 + 20 * i, some_month_data[i][1], 50 + 20 * (i + 1), some_month_data[i + 1][1]);
+                }
+            });
+
+            gradientRect(50, 90, 540, 200, [
+                [color(80, 166, 191), 0],
+                [color(156, 196, 139), 0.5],
+                [color(179, 157, 83), 1]
+            ], Y_AXIS);
+        }
+
+        function draw() {}
+
+        /**
+         * 绘制渐变矩形
+         *  x,y,w,h - 和rect的属性一致
+         * 
+         */
+        function gradientRect(x, y, w, h, colors, axis) {
+            noFill();
+            if (axis === Y_AXIS) {
+                // Top to bottom gradient
+                for (let cindex = 0; cindex < colors.length - 1; cindex++) {
+                    let y0 = y + h * colors[cindex][1];
+                    let y1 = y + h * colors[cindex + 1][1];
+                    for (let i = y0; i <= y1; i++) {
+                        let inter = map(i, y0, y1, 0, 1);
+                        let c = lerpColor(colors[cindex][0], colors[cindex + 1][0], inter);
+                        stroke(c);
+                        line(x, i, x + w, i);
+                    }
+                }
+                // Left to right gradient(unfinished)
+            } else if (axis === X_AXIS) {
+                for (let i = x; i <= x + w; i++) {
+                    let inter = map(i, x, x + w, 0, 1);
+                    let c = lerpColor(c1, c2, inter);
+                    stroke(c);
+                    line(i, y, i, y + h);
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>
