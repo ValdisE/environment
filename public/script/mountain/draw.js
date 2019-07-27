@@ -1,5 +1,8 @@
+/**
+ * 加载数据，主要是将数据集转换成二维坐标数据，以供drawMountain()函数绘制
+ * @param {Array} dataset - 二维数组，包含时间和数值两个维度的数据
+ */
 function loadData(dataset) {
-    // 接受二维数组，包括时间和数值两个维度的数据
     let val_min = Number.MAX_VALUE,
         val_max = Number.MIN_VALUE;
     for (let d of dataset) {
@@ -66,6 +69,11 @@ function loadData(dataset) {
     }
 }
 
+
+/**
+ * 绘制
+ * 
+ */
 function drawMountain() {
     // 渐变背景
     gradientRect(this.rect.x, this.rect.y, this.rect.w, this.rect.h, [
@@ -89,7 +97,7 @@ function drawMountain() {
     // 绘制外轮廓
     stroke(32);
     for (let i = 0; i < this.outer_line.length - 1; i++) {
-        line(
+        scribble.scribbleLine(
             this.outer_line[i][0], this.outer_line[i][1],
             this.outer_line[i + 1][0], this.outer_line[i + 1][1]
         )
@@ -99,7 +107,7 @@ function drawMountain() {
     stroke(32);
     for (let i = 0; i < this.inner_line.length; i++) {
         for (let j = 0; j < this.inner_line[i].length - 1; j++) {
-            line(
+            scribble.scribbleLine(
                 this.inner_line[i][j][0], this.inner_line[i][j][1],
                 this.inner_line[i][j + 1][0], this.inner_line[i][j + 1][1]
             )
