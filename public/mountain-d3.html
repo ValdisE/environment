@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Mountain-d3</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0
+        }
+
+        body {
+            overflow-y: hidden
+        }
+    </style>
+</head>
+
+<body>
+
+
+
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="./script/calcMonthlyData.js"></script>
+    <script src="./script/getMonthData.js"></script>
+    <script>
+        const city = 'beijing';
+
+        // let data = [
+        //     d3.range(25).map(function (i) {
+        //         return [i + 1, 100 + i]
+        //     })
+        // ];
+        d3.csv('./data/' + city + '.csv').then(val => {
+            let some_month_data = getMonthData(val, 2018, 12);
+            let data = [some_month_data];
+            data[0].push([data[0][data[0].length - 1][0], 300]);
+            data[0].unshift([data[0][0][0], 300]);
+            console.log(data)
+            let x = d3.scaleLinear().domain([0, 25]).range([0, window.innerWidth - 300]),
+                y = d3.scaleLinear().domain([0, 400]).range([50, 450]);
+
+            let line = d3.line()
+                .x(d => x(d[0]))
+                .y(d => y(d[1]))
+
+            let svg = d3.select('body').append('svg').style('background-color', 'rgb(239, 232, 222)');
+            svg.attr('width', window.innerWidth)
+                .attr('height', window.innerHeight);
+
+            let linearGradient = svg.append('defs').append('linearGradient')
+                .attr('id', 'mountain-color')
+                .attr('x1', '0%')
+                .attr('y1', '0%')
+                .attr('x2', '0%')
+                .attr('y2', '100%')
+                .attr('x3', '0%')
+                .attr('y3', '100%')
+                .attr('x4', '0%')
+                .attr('y4', '100%');
+            linearGradient.append('stop')
+                .attr('offset', '0%')
+                .style('stop-color', 'rgb(80, 166, 191)')
+                .style('stop-opacity', '1');
+            linearGradient.append('stop')
+                .attr('offset', '50%')
+                .style('stop-color', 'rgb(156, 196, 139)')
+                .style('stop-opacity', '1');
+            linearGradient.append('stop')
+                .attr('offset', '90%')
+                .style('stop-color', 'rgb(179, 157, 83)')
+                .style('stop-opacity', '1');
+            linearGradient.append('stop')
+                .attr('offset', '100%')
+                .style('stop-color', 'rgb(239, 232, 222)')
+                .style('stop-opacity', '1');
+
+            svg.selectAll('path.line')
+                .data(data)
+                .enter()
+                .append('path')
+                .classed('line', true)
+                .style('fill', 'url(#mountain-color)')
+                .style('stroke', '#000')
+                .attr('d', d => line(d));
+        });
+    </script>
+</body>
+
+</html>
