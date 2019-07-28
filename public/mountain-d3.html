@@ -11,34 +11,25 @@
             margin: 0;
             padding: 0
         }
-
-        body {
-            overflow-y: hidden
-        }
     </style>
 </head>
 
 <body>
-
-
-
+    <a href="" id="link">23333</a>
     <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
     <script src="./script/calcMonthlyData.js"></script>
     <script src="./script/getMonthData.js"></script>
     <script>
-        const city = 'beijing';
+        const svgHeadInfo =
+            '<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd" > ';
+        const city = 'shanghai';
 
-        // let data = [
-        //     d3.range(25).map(function (i) {
-        //         return [i + 1, 100 + i]
-        //     })
-        // ];
         d3.csv('./data/' + city + '.csv').then(val => {
             let some_month_data = getMonthData(val, 2018, 12);
             let data = [some_month_data];
             data[0].push([data[0][data[0].length - 1][0], 300]);
             data[0].unshift([data[0][0][0], 300]);
-            console.log(data)
             let x = d3.scaleLinear().domain([0, 25]).range([0, window.innerWidth - 300]),
                 y = d3.scaleLinear().domain([0, 400]).range([50, 450]);
 
@@ -46,7 +37,13 @@
                 .x(d => x(d[0]))
                 .y(d => y(d[1]))
 
-            let svg = d3.select('body').append('svg').style('background-color', 'rgb(239, 232, 222)');
+
+            let svg = d3.select('body').append('div').append('svg')
+                .attr("xmlns:xlink", "http://www.w3.org/1999/xlink")
+                .attr('id', 'svg')
+                .style('background-color', 'rgb(239, 232, 222)');
+
+            // let svg = d3.select('body').append('svg').style('background-color', 'rgb(239, 232, 222)');
             svg.attr('width', window.innerWidth)
                 .attr('height', window.innerHeight);
 
@@ -85,6 +82,43 @@
                 .style('fill', 'url(#mountain-color)')
                 .style('stroke', '#000')
                 .attr('d', d => line(d));
+
+            // let svgSource = svg.attr("version", 1.1)
+            //     .attr("xmlns", "http://www.w3.org/2000/svg")
+            //     .node().parentNode.innerHTML;
+            // console.log(svgSource)
+            // d3.select("body").append("a")
+            //     .attr("title", "file.svg")
+            //     .attr("href-lang", "image/svg+xml")
+            //     .attr(
+            //         "href",
+            //         "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(svgHeadInfo + svgSource)))
+            //     )
+            //     .text("保存");
+
+            //get svg element.
+            let svg11 = document.getElementById("svg");
+            //get svg source.
+            let serializer = new XMLSerializer();
+            let source = serializer.serializeToString(svg11);
+
+            //add name spaces
+            if (!source.match(/^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/)) {
+                source = source.replace(/^<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');
+            }
+            if (!source.match(/^<svg[^>]+"http\:\/\/www\.w3\.org\/1999\/xlink"/)) {
+                source = source.replace(/^<svg/, '<svg xmlns:xlink="http://www.w3.org/1999/xlink"');
+            }
+
+            //add xml declaration
+            source = '<?xml version="1.0" standalone="no"?>\r\n' + source;
+
+            //convert svg source to URI data scheme.
+            let url = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(source);
+
+            //set url value to a element's href attribute.
+            document.getElementById("link").href = url;
+
         });
     </script>
 </body>
