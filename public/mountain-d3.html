@@ -52,6 +52,8 @@
             <option value="wuhan">武汉</option>
             <option value="hefei">合肥</option>
             <option value="nanjing">南京</option>
+            <option value="haikou">海口</option>
+            <option value="shijiazhuang">石家庄</option>
         </select>
         <label for="year-select">年份：</label>
         <select name="year-select" id="year-select">
@@ -87,13 +89,13 @@
                 console.log(cooked_data);
                 let d_min = Number.MAX_VALUE,
                     d_max = Number.MIN_VALUE,
-                    most_polluted = Number.MIN_VALUE;
+                    most_polluted = Number.MIN_VALUE,
+                    most_clean = Number.MAX_VALUE;
                 for (let d of cooked_data) {
                     if (parseFloat(d[0]) > d_max) d_max = parseFloat(d[0]);
                     if (parseFloat(d[0]) < d_min) d_min = parseFloat(d[0]);
-                    if (parseFloat(d[1]) > most_polluted) {
-                        most_polluted = parseFloat(d[1]);
-                    }
+                    if (parseFloat(d[1]) > most_polluted) most_polluted = parseFloat(d[1]);
+                    if (parseFloat(d[1]) < most_clean) most_clean = parseFloat(d[1]);
                 }
 
                 let data = [cooked_data];
@@ -119,19 +121,23 @@
                     .attr('x2', '0%')
                     .attr('y2', '100%');
                 linearGradient.append('stop')
-                    .attr('offset', '0%')
+                    .attr('offset', parseInt((0 - most_clean) / (most_polluted - most_clean) * 100) + '%')
                     .style('stop-color', '#1685a9')
                     .style('stop-opacity', '1');
                 linearGradient.append('stop')
-                    .attr('offset', '30%')
+                    .attr('offset', parseInt((100 - most_clean) / (most_polluted - most_clean) * 100) + '%')
                     .style('stop-color', '#76cfa6')
                     .style('stop-opacity', '1');
+                // linearGradient.append('stop')
+                //     .attr('offset', parseInt((150 - most_clean) / (most_polluted - most_clean) * 100) + '%')
+                //     .style('stop-color', '#76cfa6')
+                //     .style('stop-opacity', '1');
                 linearGradient.append('stop')
-                    .attr('offset', '60%')
+                    .attr('offset', parseInt((200 - most_clean) / (most_polluted - most_clean) * 100) + '%')
                     .style('stop-color', '#a78e44')
                     .style('stop-opacity', '1');
                 linearGradient.append('stop')
-                    .attr('offset', '90%')
+                    .attr('offset', parseInt((250 - most_clean) / (most_polluted - most_clean) * 100) + '%')
                     .style('stop-color', '#845a33')
                     .style('stop-opacity', '1');
                 linearGradient.append('stop')
