@@ -48,6 +48,5 @@ function getYearData(val, year) {
     //         data[i][1] = max_aqi;
     //     }
     // }
-    console.log(data);
     return data;
 }

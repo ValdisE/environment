@@ -13,7 +13,6 @@ function getAllMonthlyData(val) {
     //     }
     // }
 
-    console.log(max_aqi);
     // 将无数据的月份数据替换为最大AQI
     for (let i = 0; i < data.length; i++) {
         if (data[i][1] == null) {
