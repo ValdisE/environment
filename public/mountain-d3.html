@@ -13,21 +13,6 @@
             padding: 0
         }
 
-        /* #link {
-            position: absolute;
-            left: 150px;
-            top: 50px;
-            display: block;
-            background-color: brown;
-            height: 60px;
-            width: 60px;
-            line-height: 60px;
-            text-align: center;
-            text-decoration: none;
-            color: #fff;
-            border-radius: 50%;
-        } */
-
         #city-block {
             position: absolute;
             padding: 3%;
@@ -101,7 +86,6 @@
             </select>
         </div>
         <a class="btn btn-warning" href="" id="link">保存</a>
-
     </form>
 
     <script src="https://d3js.org/d3.v5.min.js"></script>
@@ -112,7 +96,7 @@
     <script src="./script/extract_data/getAllMonthlyData.js"></script>
     <script>
         const svgHeadInfo =
-            '<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd" > ';
+            '<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">';
         let city = 'shanghai';
         let years;
         let year = 2019;
@@ -170,23 +154,27 @@
                     .attr('x2', '0%')
                     .attr('y2', '100%');
                 linearGradient.append('stop')
-                    .attr('offset', parseInt((0 - most_clean) / (most_polluted - most_clean) * 100) +
-                        '%')
+                    .attr(
+                        'offset',
+                        parseInt((0 - most_clean) / (most_polluted - most_clean) * 100) + '%')
                     .style('stop-color', '#1685a9')
                     .style('stop-opacity', '1');
                 linearGradient.append('stop')
-                    .attr('offset', parseInt((100 - most_clean) / (most_polluted - most_clean) * 100) +
-                        '%')
+                    .attr(
+                        'offset',
+                        parseInt((100 - most_clean) / (most_polluted - most_clean) * 100) + '%')
                     .style('stop-color', '#76cfa6')
                     .style('stop-opacity', '1');
                 linearGradient.append('stop')
-                    .attr('offset', parseInt((200 - most_clean) / (most_polluted - most_clean) * 100) +
-                        '%')
+                    .attr(
+                        'offset',
+                        parseInt((200 - most_clean) / (most_polluted - most_clean) * 100) + '%')
                     .style('stop-color', '#a78e44')
                     .style('stop-opacity', '1');
                 linearGradient.append('stop')
-                    .attr('offset', parseInt((250 - most_clean) / (most_polluted - most_clean) * 100) +
-                        '%')
+                    .attr(
+                        'offset',
+                        parseInt((250 - most_clean) / (most_polluted - most_clean) * 100) + '%')
                     .style('stop-color', '#845a33')
                     .style('stop-opacity', '1');
                 linearGradient.append('stop')
@@ -224,6 +212,13 @@
                 document.getElementById("link").href = url;
             });
         });
+
+        $('#link').hover(function () {
+            $(this).text('导出svg: 右键→在新标签页中打开链接');
+        }, function () {
+            $(this).text('保存');
+        });
+
         $('#city-block').change();
     </script>
 </body>
