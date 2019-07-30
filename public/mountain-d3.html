@@ -97,18 +97,16 @@
     <script>
         const svgHeadInfo =
             '<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">';
-        let city = 'shanghai';
+        let city = 'beijing';
         let years;
         let year = 2019;
 
         $('#city-block').change(() => {
             city = $('#city-select').val();
             year = $('#year-select').val();
-            radio_val = $("input[name='time-type']:checked").val();
+            let radio_val = $("input[name='time-type']:checked").val();
             $('#main').remove();
             d3.csv('./data/' + city + '.csv').then(val => {
-                console.log('当前年份:', year);
-
                 let cooked_data;
                 if (radio_val == 'all-time') {
                     years = [2013, 2014, 2015, 2016, 2017, 2018, 2019];
@@ -120,6 +118,8 @@
                 cooked_data = getAllMonthlyData(val, years);
 
                 console.log('选取的数据集:', cooked_data);
+
+                // 计算最值
                 let d_min = Number.MAX_VALUE,
                     d_max = Number.MIN_VALUE,
                     most_polluted = Number.MIN_VALUE,
@@ -131,9 +131,13 @@
                     if (parseFloat(d[1]) < most_clean) most_clean = parseFloat(d[1]);
                 }
 
+                most_polluted = 300;
+                // 构建绘图数据
                 let data = [cooked_data];
                 data[0].push([data[0][data[0].length - 1][0], most_polluted]);
                 data[0].unshift([data[0][0][0], most_polluted]);
+
+                // d3线条生成器准备
                 let x = d3.scaleLinear().domain([d_min, d_max]).range([50, window.innerWidth - 50]),
                     y = d3.scaleLinear().domain([0, most_polluted]).range([100, 450]);
                 let line = d3.line()
@@ -191,6 +195,7 @@
                     .style('stroke', '#000')
                     .attr('d', d => line(d));
 
+                // 生成svg文件链接
                 let serializer = new XMLSerializer();
                 let source = serializer.serializeToString(document.getElementById("svg"));
 
@@ -209,7 +214,7 @@
                 let url = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(source);
 
                 //set url value to a element's href attribute.
-                document.getElementById("link").href = url;
+                $("#link").attr('href', url);
             });
         });
 
