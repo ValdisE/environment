@@ -1,6 +1,5 @@
-function getAllMonthlyData(val) {
+function getAllMonthlyData(val, years) {
     let data = [];
-    let years = [2013, 2014, 2015, 2016, 2017, 2018, 2019];
     // 首先获取有哪些年份
     for (let y of years) data = data.concat(getYearData(val, y))
     for (let d in data) data[d][0] = d;
